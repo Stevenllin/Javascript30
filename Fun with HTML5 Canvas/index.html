@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Canvas</title>
+</head>
+<body>
+    <canvas id="draw" width="800" height="800"></canvas>
+
+    <script>
+        const canvas = document.querySelector('#draw');
+        const ctx = canvas.getContext('2d');
+        // 定義2d繪圖，若不定義範圍則使用html的範圍
+
+        canvas.width = window.innerHeight;
+        canvas.height = window.innerWidth;
+
+        ctx.strokeStyle = '#BADA55';
+        // 定義繪畫的顏色
+        ctx.lineJoin = 'round';
+        // 定義兩線相交時的拐角練習
+        ctx.lineCap = 'round';
+        // 定義結束端點樣式
+        ctx.lineWidth = 50;
+
+        let isDrawing = false;
+        // 表示是否正在繪圖
+        let lastX = 0;
+        let lastY = 0;
+        let hue = 0;
+        let direction = true;
+
+        function draw(e){
+            if(!isDrawing) return;
+            // 若非正在繪圖狀態即回傳
+            console.log(e);
+            
+            ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+            // hue代表顏色的度數0-360，0是紅色 ，120是綠色，240是藍色；
+            // Saturation代表灰階程度，0%為灰黑，100%為彩色，一般設置為100%。
+            // Lightness為亮度，0%代表黑，100%代表白，一般設置為50%。
+            ctx.beginPath();
+            // 當作繪畫啟動
+            ctx.moveTo(lastX, lastY);
+            // 當作起點位置
+            ctx.lineTo(e.offsetX, e.offsetY);
+            // 當作終點位置
+            ctx.stroke();
+            // 代表繪製以定義的路徑
+
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            // 更新起始位置
+
+            hue++;
+            if(hue >= 360){
+                hue = 0;
+            }
+            // 若hue超過360，重新reset
+
+            if(ctx.lineWidth >= 50 || ctx.lineWidth <= 1){
+                direction = !direction;
+            }
+            // 若超過50或是小於1，則改變增加或減少
+            if(direction){
+                ctx.lineWidth++;
+            }else{
+                ctx.lineWidth--;
+            }
+            // 若方向為正，正成長;若方向為負，負成長
+        }
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+            // 當mousedown時，即把當前位置作為初始位置
+        });
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+    </script>
+
+    <style>
+        html, body{
+            margin: 0;
+        }
+    </style>
+</body>
+</html>

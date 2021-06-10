@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Javascript's Capture</title>
+</head>
+<body class="bod">
+    <div class="one">
+        <div class="two">
+          <div class="three">
+          </div>
+        </div>
+    </div>
+    
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+      *, *:before, *:after { box-sizing: inherit; }
+    
+      div {
+        width:100%;
+        padding:100px;
+      }
+    
+      .one {
+        background: thistle;
+      }
+    
+      .two {
+        background:mistyrose;
+      }
+    
+      .three {
+        background:coral;
+      }
+    </style>
+
+    <script>
+        const divs = document.querySelectorAll('div');
+
+        function logText(e){
+            console.log(this.classList.value);
+            
+            e.stopPropagation();
+            // stop bubbling
+        }
+
+        divs.forEach(div => div.addEventListener('click', logText, {
+            capture: false,
+            once: true
+            // once代表只執行一次
+        }));
+        // 當一個監聽器時，會由外向內的Capture這個監聽器的位置，而當位置被觸發時，會由內向外去bubbling。預設option內的capture選項為false
+    </script>
+</body>
+</html>
